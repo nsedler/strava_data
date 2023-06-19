@@ -3,11 +3,11 @@ import time
 import pandas as pd
 from stravalib.client import Client
 
+
 client = Client()
 MY_STRAVA_CLIENT_ID, MY_STRAVA_CLIENT_SECRET = (
     open("client.secret").read().strip().split(",")
 )
-
 
 print("Client ID and secret read from file")
 
@@ -51,7 +51,10 @@ with open("access_token.pickle", "rb") as f:
 print("Latest access token read from file\n\n\n\n")
 
 
-activities2 = client.get_activities(limit=100)
+# Create a function to get latest (most current / recent) activity
+# added to data/activities.csv
+# activities_list = client.get_activities(after=date)
+activities_list = client.get_activities(before="2023-03-21")
 
 
 # a-z order | create new field table with different, better names. ex gear = shoe, maps = polyline etc
@@ -87,7 +90,7 @@ fields = [
 
 activity_data = []
 
-for activity in activities2:
+for activity in activities_list:
     id = activity.id
     act = client.get_activity(id, True)
     my_dict = act.to_dict()
@@ -113,10 +116,9 @@ for activity in activities2:
 
     activity_data.append(list)
 
-    # activity_data.append([my_dict.get(x) for x in fields])
-
-athlete_shoes = client.get_athlete().shoes
-
 
 df = pd.DataFrame(activity_data, columns=fields)
-df.to_csv("data/activities.csv")
+df.to_csv(
+    "data/BUactivities.csv",
+)
+df.to_csv("data/activities.csv", mode="a")
