@@ -4,6 +4,12 @@ import pandas as pd
 from stravalib.client import Client
 
 
+def get_latest_date():
+    df = pd.read_csv("data/activities.csv")
+    df.sort_values(by="start_date_local", ascending=False, inplace=True)
+    return df["start_date_local"][0].split(" ")[0]
+
+
 client = Client()
 MY_STRAVA_CLIENT_ID, MY_STRAVA_CLIENT_SECRET = (
     open("client.secret").read().strip().split(",")
@@ -54,7 +60,9 @@ print("Latest access token read from file\n\n\n\n")
 # Create a function to get latest (most current / recent) activity
 # added to data/activities.csv
 # activities_list = client.get_activities(after=date)
-activities_list = client.get_activities(before="2023-03-21")
+
+latest_date = get_latest_date()
+activities_list = client.get_activities(after=latest_date)
 
 
 # a-z order | create new field table with different, better names. ex gear = shoe, maps = polyline etc
@@ -62,18 +70,18 @@ fields = [
     "achievement_count",
     "average_cadence",
     "average_heartrate",
-    "average_speed",  # currently meters/sec, should be either MM:SS pace or MPH
+    "average_speed",  # currently meters/sec, should be either MM:SS pace or MPH (done in notebook)
     "average_temp",  # currently celcius, change to fareignheight (sp?)
     "average_watts",
     "best_efforts",
     "calories",
     "device_name",
-    "distance",  # currently meters, should be miles
+    "distance",  # currently meters, should be miles (done in notebook)
     "elapsed_time",  # currently in seconds, should be HH:MM:SS
     "gear",
     "kilojoules",
-    "laps",  # number of laps
-    "map",  # just the polyline
+    "laps",
+    "map",
     "max_heartrate",
     "max_speed",  # currently meters/sec, should be either MM:SS pace or MPH
     "max_watts",
@@ -117,8 +125,10 @@ for activity in activities_list:
     activity_data.append(list)
 
 
-df = pd.DataFrame(activity_data, columns=fields)
+df = pd.DataFrame(activity_data)
+
 df.to_csv(
-    "data/BUactivities.csv",
-)
+    "data/BUactivities1.csv",
+)  # backup save incase error appending below
+
 df.to_csv("data/activities.csv", mode="a")
