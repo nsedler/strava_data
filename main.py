@@ -71,7 +71,7 @@ fields = [
     "average_cadence",
     "average_heartrate",
     "average_speed",  # currently meters/sec, should be either MM:SS pace or MPH (done in notebook)
-    "average_temp",  # currently celcius, change to fareignheight (sp?)
+    "average_temp",  # currently celcius, change to fareignheight (sp?) (done in notebook)
     "average_watts",
     "best_efforts",
     "calories",
