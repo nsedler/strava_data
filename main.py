@@ -99,30 +99,30 @@ fields = [
 activity_data = []
 
 for activity in activities_list:
-    id = activity.id
-    act = client.get_activity(id, True)
-    my_dict = act.to_dict()
-    list = []
-    for field in fields:  # probably best to use a switch statement instead
-        cur = my_dict.get(field)
+    activity_id = activity.id
+    activitiy_details = client.get_activity(activity_id, True)
+    activitiy_detail_dict = activitiy_details.to_dict()
+    data_list = []
 
-        if cur:
+    for field in fields:
+        current_field = activitiy_detail_dict.get(field)
+        if current_field:
             match field:
                 case "gear":
-                    list.append(cur["name"])
+                    data_list.append(current_field["name"])
                 case "best_efforts":
-                    list.append(len(cur))
+                    data_list.append(len(current_field))
                 case "laps":
-                    list.append(len(cur))
+                    data_list.append(len(current_field))
                 case "map":
-                    list.append(cur["polyline"])
+                    data_list.append(current_field["polyline"])
 
                 case _:
-                    list.append(cur)
+                    data_list.append(current_field)
         else:
-            list.append("")
+            data_list.append("")
 
-    activity_data.append(list)
+    activity_data.append(data_list)
 
 
 df = pd.DataFrame(activity_data)
@@ -131,4 +131,4 @@ df.to_csv(
     "data/BUactivities1.csv",
 )  # backup save incase error appending below
 
-df.to_csv("data/activities.csv", mode="a")
+df.to_csv("data/activities.csv", mode="a", header=False)
